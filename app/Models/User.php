@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App\Models\Course\Course;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -29,11 +29,10 @@ class User extends Authenticatable implements JWTSubject
 
         "state",//1 es activo y 2 es desactivo
         "type_user",// 1 es de tipo cliente y 2 es de tipo admin
-    
+
         "is_instructor",
         "profesion",
-        "description",
-        "phone",
+        "description"
     ];
 
     /**
@@ -74,12 +73,6 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
-
     public function courses()
     {
         return $this->hasMany(Course::class)->where("state",2);
@@ -90,21 +83,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->courses->count();
     }
 
-    public function getAvgReviewsAttribute()
+    public function role()
     {
-        return $this->courses->avg("avg_reviews");
+        return $this->belongsTo(Role::class);
     }
-
-    public function getCountReviewsAttribute()
-    {
-        return $this->courses->sum("count_reviews");
-    }
-
-    public function getCountStudentsAttribute()
-    {
-        return $this->courses->sum("count_students");
-    }
-
 
     function scopeFilterAdvance($query,$search,$state)
     {

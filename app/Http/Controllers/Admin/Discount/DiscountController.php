@@ -167,7 +167,7 @@ class DiscountController extends Controller
             }
         }
 
-        // $request->request->add(["code" => uniqid()]);
+        $request->request->add(["code" => uniqid()]);
         $discount = Discount::findOrFail($id);
         $discount->update($request->all());
 

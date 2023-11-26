@@ -21,23 +21,28 @@ class CourseGResource extends JsonResource
             "slug" => $this->resource->slug,
             "imagen" => env("APP_URL")."storage/".$this->resource->imagen,
             "categorie_id" => $this->resource->categorie_id,
-            "categorie" => [
-                "id" => $this->resource->categorie->id,
+
+            "categorie" => $this->resource->categorie ? ["id" => $this->resource->categorie->id, "name" => $this->resource->categorie->name] : null,
+            "sub_categorie" => $this->resource->sub_categorie ? ["id" => $this->resource->sub_categorie->id, "name" => $this->resource->sub_categorie->name] : null,
+             "user" => $this->resource->instructor ? ["id" => $this->resource->instructor->id, "full_name" => $this->resource->instructor->name.' '.$this->resource->instructor->surname, "email" => $this->resource->instructor->email] : null,
+
+           /* "categorie" => [
+                "id" => $this->resource->id ?? null,
                 "name" => $this->resource->categorie->name
-            ],
-            "sub_categorie_id" => $this->resource->sub_categorie_id,
-            "sub_categorie" => [
-                "id" => $this->resource->sub_categorie->id,
-                "name" => $this->resource->sub_categorie->name
-            ],
+            ],*/
+            // "sub_categorie_id" => $this->resource->sub_categorie_id,
+            // "sub_categorie" => [
+            //     "id" => $this->resource->sub_categorie->id,
+            //     "name" => $this->resource->sub_categorie->name
+            // ],
             "precio_usd" => $this->resource->precio_usd,
-            "precio_pen" => $this->resource->precio_pen,
+            "precio_mxn" => $this->resource->precio_mxn,
             "user_id" => $this->resource->user_id,
-            "user" => [
-                "id" => $this->resource->instructor->id,
-                "full_name" => $this->resource->instructor->name.' '.$this->resource->instructor->surname,
-                "email" => $this->resource->instructor->email,
-            ],
+            // "user" => [
+            //     "id" => $this->resource->instructor->id,
+            //     "full_name" => $this->resource->instructor->name.' '.$this->resource->instructor->surname,
+            //     "email" => $this->resource->instructor->email,
+            // ],
             "level" => $this->resource->level,
             "idioma" => $this->resource->idioma,
             "vimeo_id" => $this->resource->vimeo_id,//

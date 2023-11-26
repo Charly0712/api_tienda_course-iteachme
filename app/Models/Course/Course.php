@@ -4,8 +4,6 @@ namespace App\Models\Course;
 
 use Carbon\Carbon;
 use App\Models\User;
-use App\Models\Sale\Review;
-use App\Models\CoursesStudent;
 use App\Models\Discount\DiscountCourse;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,8 +18,8 @@ class Course extends Model
         "subtitle",
         "slug",
         "imagen",
-        "precio_usd",
-        "precio_pen",
+        // "precio_usd",
+        "precio_mxn",
         "categorie_id",
         "sub_categorie_id",
         "user_id",
@@ -37,13 +35,13 @@ class Course extends Model
 
     public function setCreatedAtAttribute($value)
     {
-        date_default_timezone_set("America/Lima");
+        date_default_timezone_set('America/Mexico_City');
         $this->attributes["created_at"] = Carbon::now();
     }
 
     public function setUpdatedAtAttribute($value)
     {
-        date_default_timezone_set("America/Lima");
+        date_default_timezone_set('America/Mexico_City');
         $this->attributes["updated_at"] = Carbon::now();
     }
 
@@ -70,16 +68,6 @@ class Course extends Model
     public function discount_courses()
     {
         return $this->hasMany(DiscountCourse::class);
-    }
-
-    public function courses_students()
-    {
-        return $this->hasMany(CoursesStudent::class);
-    }
-
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
     }
 
     public function getDiscountCAttribute()
@@ -163,21 +151,6 @@ class Course extends Model
        return $this->AddTimes($times);
     }
 
-    public function getCountStudentsAttribute()
-    {
-        return $this->courses_students->count();
-    }
-
-    public function getCountReviewsAttribute()
-    {
-        return $this->reviews->count();
-    }
-
-    public function getAvgReviewsAttribute()
-    {
-        return $this->reviews->avg("rating");
-    }
-
     function scopeFilterAdvance($query,$search,$state)
     {
         if($search){
@@ -187,34 +160,6 @@ class Course extends Model
             $query->where("state",$state);
         }
         
-        return $query;
-    }
-
-    function scopeFilterAdvanceEcommerce($query,$search,$selected_categories = [],$instructores_selected = [],
-                                        $min_price = 0,$max_price = 0,$idiomas_selected = [],$levels_selected = [],
-                                        $courses_a = [],$rating_selected = 0)
-    {
-        if($search){
-            $query->where("title","like","%".$search."%");
-        }
-        if(sizeof($selected_categories) > 0){
-            $query->whereIn("categorie_id",$selected_categories);
-        }
-        if(sizeof($instructores_selected) > 0){
-            $query->whereIn("user_id",$instructores_selected);
-        }
-        if($min_price > 0 && $max_price > 0){
-            $query->whereBetween("precio_usd",[$min_price,$max_price]);
-        }
-        if(sizeof($idiomas_selected) > 0){
-            $query->whereIn("idioma",$idiomas_selected);
-        }
-        if(sizeof($levels_selected) > 0){
-            $query->whereIn("level",$levels_selected);
-        }
-        if($courses_a || $rating_selected){
-            $query->whereIn("id",$courses_a);
-        }
         return $query;
     }
 }
